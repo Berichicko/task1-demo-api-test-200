@@ -1,39 +1,15 @@
-import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import io.restassured.RestAssured;
+import org.apache.http.HttpStatus;
 import org.junit.Test;
-
-
 
 public class HomePagePdaTest {
 
     @Test
-    public void testApiPda() {
-        try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            CloseableHttpResponse response = client.execute(new HttpGet("https://4pda.to/"));
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String data = IOUtils.toString(entity.getContent(), "cp1251");
-
-                System.out.println("Data" + data);
-            }
-            System.out.println();
-
-            for (Header header : response.getAllHeaders()) {
-                System.out.println(header.getName() + ":" + header.getValue());
-            }
-            System.out.println();
-            System.out.println("Protocol version" + response.getProtocolVersion());
-            System.out.println("Status code" + response.getStatusLine().getStatusCode());
-            System.out.println("Reason phrase" + response.getStatusLine().getReasonPhrase());
-            System.out.println("Status line" + response.getStatusLine().toString());
-        } catch (Throwable cause) {
-            cause.printStackTrace();
-        }
+    public void getRequestCheckStatusCode() {
+        RestAssured.given()
+                .spec(Specifications.requestSpecification())//---> Указание RequestSpecification для формирования request
+                .get("special/samsung")//---> Endpoint для выполнения запроса GET
+                .then()
+                .statusCode(HttpStatus.SC_OK);//---> Проверка статус код
     }
 }
